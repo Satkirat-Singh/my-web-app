@@ -1,40 +1,63 @@
 pipeline {
     agent any
-    
+
     stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/Satkirat-Singh/docker-web-app.git'  // Replace with your repository URL
+                script {
+                    if (isUnix()) {
+                        sh 'git clone https://github.com/your-repo.git'
+                    } else {
+                        bat 'git clone https://github.com/your-repo.git'
+                    }
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t my-web-app .'
+                    if (isUnix()) {
+                        sh 'docker build -t myimage .'
+                    } else {
+                        bat 'docker build -t myimage .'
+                    }
                 }
             }
         }
 
-        stage('Test Docker Container') {
+        stage('Run Docker Container') {
             steps {
                 script {
-                    // Test the container
-                    sh 'docker run -d -p 80:80 --name my-web-app-test my-web-app'
-                    sh 'docker ps | grep my-web-app-test'
+                    if (isUnix()) {
+                        sh 'docker run -d -p 8080:80 myimage'
+                    } else {
+                        bat 'docker run -d -p 8080:80 myimage'
+                    }
                 }
             }
         }
 
-        stage('Deploy Docker Container') {
+        stage('Test Application') {
             steps {
                 script {
-                    // Stop and remove the previous container
-                    sh 'docker stop my-web-app || true'
-                    sh 'docker rm my-web-app || true'
-                    
-                    // Run the new container
-                    sh 'docker run -d -p 80:80 --name my-web-app my-web-app'
+                    if (isUnix()) {
+                        sh 'curl http://localhost:8080'
+                    } else {
+                        bat 'curl http://localhost:8080'
+                    }
+                }
+            }
+        }
+
+        stage('Clean Up Docker') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'docker stop $(docker ps -q) && docker rm $(docker ps -aq)'
+                    } else {
+                        bat 'docker stop $(docker ps -q) && docker rm $(docker ps -aq)'
+                    }
                 }
             }
         }
@@ -43,9 +66,11 @@ pipeline {
     post {
         always {
             script {
-                // Clean up any resources
-                sh 'docker rm -f my-web-app-test || true'
-                sh 'docker image prune -f'
+                if (isUnix()) {
+                    sh 'docker system prune -f'
+                } else {
+                    bat 'docker system prune -f'
+                }
             }
         }
     }
