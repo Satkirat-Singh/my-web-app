@@ -6,9 +6,9 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'git clone https://github.com/your-repo.git'
+                        sh 'git clone https://github.com/Satkirat-Singh/docker-web-app.git'
                     } else {
-                        bat 'git clone https://github.com/your-repo.git'
+                        bat 'git clone https://github.com/Satkirat-Singh/docker-web-app.git'
                     }
                 }
             }
