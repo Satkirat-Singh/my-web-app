@@ -1,75 +1,28 @@
 pipeline {
-    agent any
+    agent any 
 
     stages {
-        stage('Clone Repository') {
+        stage('Build') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh 'git clone https://github.com/Satkirat-Singh/docker-web-app.git'
-                    } else {
-                        bat 'git clone https://github.com/Satkirat-Singh/docker-web-app.git'
-                    }
+                    // Windows command to clean and package the Maven project
+                    bat 'mvn clean package'
                 }
             }
         }
-
-        stage('Build Docker Image') {
+        stage('Test') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh 'docker build -t myimage .'
-                    } else {
-                        bat 'docker build -t myimage .'
-                    }
+                    // Windows command to run Maven tests
+                    bat 'mvn test'
                 }
             }
         }
-
-        stage('Run Docker Container') {
+        stage('Deploy') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh 'docker run -d -p 8080:80 myimage'
-                    } else {
-                        bat 'docker run -d -p 8080:80 myimage'
-                    }
-                }
-            }
-        }
-
-        stage('Test Application') {
-            steps {
-                script {
-                    if (isUnix()) {
-                        sh 'curl http://localhost:8080'
-                    } else {
-                        bat 'curl http://localhost:8080'
-                    }
-                }
-            }
-        }
-
-        stage('Clean Up Docker') {
-            steps {
-                script {
-                    if (isUnix()) {
-                        sh 'docker stop $(docker ps -q) && docker rm $(docker ps -aq)'
-                    } else {
-                        bat 'docker stop $(docker ps -q) && docker rm $(docker ps -aq)'
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            script {
-                if (isUnix()) {
-                    sh 'docker system prune -f'
-                } else {
-                    bat 'docker system prune -f'
+                    // Windows command to run the JAR file
+                    bat 'java -jar target\\my-web-app-1.0-SNAPSHOT.jar'
                 }
             }
         }
