@@ -1,8 +1,8 @@
-# Use the official Nginx image
-FROM nginx:alpine
+# Use Apache HTTP Server image
+FROM httpd:2.4
 
-# Copy HTML files to the Nginx server
-COPY . /usr/share/nginx/html/
+# Copy the contents of the current directory into the web server's root directory
+COPY . /usr/local/apache2/htdocs/
 
 # Expose port 80
 EXPOSE 80
