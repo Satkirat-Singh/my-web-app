@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/yourusername/docker-web-app.git'  // Replace with your repository URL
+                git url: 'https://github.com/Satkirat-Singh/docker-web-app.git'  // Replace with your repository URL
             }
         }
 
