@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Windows command to run the JAR file
-                    bat 'java -jar target\\my-web-app-1.0-SNAPSHOT.jar'
+                    bat 'java -jar target\\my-web-app-1.0-SNAPSHOT.jar --server.port=8081'
                 }
             }
         }
